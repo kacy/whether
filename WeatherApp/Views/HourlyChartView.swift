@@ -5,7 +5,7 @@ struct HourlyChartView: View {
     private var yAxisMinMax: (Double, Double) {
         let minValue = hourlyCharts.map { Double($0.temp) }.min() ?? 0
         let maxValue = hourlyCharts.map { Double($0.temp) }.max() ?? 0
-        return (minValue, maxValue)
+        return (minValue - 10, maxValue + 10)
     }
     
     private func yAxisLabel(for revenue: Double) -> String {
@@ -30,13 +30,27 @@ struct HourlyChartView: View {
                             x: .value("hour", hour.hour),
                             y: .value("temp", hour.temp)
                         )
+                        PointMark(
+                            x: .value("hour", hour.hour),
+                            y: .value("temp", hour.temp)
+                        ).annotation(position: .overlay,
+                                     alignment: .bottom,
+                                     spacing: 10) {
+                            Text("\(hour.temp)")
+                                .font(.body)
+                         }
     //                    .symbol("location.fill")
     //                    .interpolationMethod(.stepStart)
     //                    .interpolationMethod(.stepStart)
-                        .interpolationMethod(.linear)
+//                        .interpolationMethod(.linear)
+                        .interpolationMethod(.cardinal)
+                        .symbol(Circle())
                     }
                     .lineStyle(StrokeStyle(lineWidth: 2.5))
                 }
+                .frame(height: 280.0)
+                .padding([.top, .bottom, .leading, .trailing], 10)
+                .foregroundStyle(Gradient(colors: [.yellow, .orange, .pink]))
                 .foregroundColor(Color.orange)
                 .chartYScale(domain: (yAxisMinMax.0)...(yAxisMinMax.1))
                 .chartXAxis {
